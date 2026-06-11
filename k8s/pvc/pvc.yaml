@@ -1,0 +1,55 @@
+---
+# Storage for user-service PostgreSQL
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: postgres-user-pvc
+  namespace: food-delivery-dev
+spec:
+  accessModes:
+    - ReadWriteOnce          # One node can read/write at a time (standard for DBs)
+  resources:
+    requests:
+      storage: 1Gi
+
+---
+# Storage for order-service PostgreSQL
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: postgres-order-pvc
+  namespace: food-delivery-dev
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 2Gi           # Orders need more space
+
+---
+# Storage for restaurant-service MongoDB
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: mongodb-pvc
+  namespace: food-delivery-dev
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 2Gi
+
+---
+# Storage for Kafka — message retention
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: kafka-pvc
+  namespace: food-delivery-dev
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 5Gi

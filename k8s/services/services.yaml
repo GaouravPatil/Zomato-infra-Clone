@@ -1,0 +1,85 @@
+---
+# user-service ClusterIP — only reachable inside the cluster
+apiVersion: v1
+kind: Service
+metadata:
+  name: user-service
+  namespace: food-delivery-dev
+spec:
+  selector:
+    app: user-service
+  ports:
+    - protocol: TCP
+      port: 3001          # Port other services call
+      targetPort: 3001    # Port the container listens on
+  type: ClusterIP         # Internal only — NOT exposed outside cluster
+---
+# order-service
+apiVersion: v1
+kind: Service
+metadata:
+  name: order-service
+  namespace: food-delivery-dev
+spec:
+  selector:
+    app: order-service
+  ports:
+    - port: 3002
+      targetPort: 3002
+  type: ClusterIP
+---
+# restaurant-service
+apiVersion: v1
+kind: Service
+metadata:
+  name: restaurant-service
+  namespace: food-delivery-dev
+spec:
+  selector:
+    app: restaurant-service
+  ports:
+    - port: 3003
+      targetPort: 3003
+  type: ClusterIP
+---
+# delivery-service
+apiVersion: v1
+kind: Service
+metadata:
+  name: delivery-service
+  namespace: food-delivery-dev
+spec:
+  selector:
+    app: delivery-service
+  ports:
+    - port: 3004
+      targetPort: 3004
+  type: ClusterIP
+---
+# payment-service
+apiVersion: v1
+kind: Service
+metadata:
+  name: payment-service
+  namespace: food-delivery-dev
+spec:
+  selector:
+    app: payment-service
+  ports:
+    - port: 3005
+      targetPort: 3005
+  type: ClusterIP
+---
+# notification-service
+apiVersion: v1
+kind: Service
+metadata:
+  name: notification-service
+  namespace: food-delivery-dev
+spec:
+  selector:
+    app: notification-service
+  ports:
+    - port: 3006
+      targetPort: 3006
+  type: ClusterIP

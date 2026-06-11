@@ -1,0 +1,16 @@
+---
+# dev namespace — your local development environment
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: food-delivery-dev
+  labels:
+    env: dev
+---
+# prod namespace — production workloads
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: food-delivery-prod
+  labels:
+    env: prod

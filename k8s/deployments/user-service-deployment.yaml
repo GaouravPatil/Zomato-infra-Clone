@@ -1,0 +1,80 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: user-service
+  namespace: food-delivery-dev
+  labels:
+    app: user-service
+    tier: backend
+spec:
+  replicas: 2                          # Start with 2 pods for availability
+  selector:
+    matchLabels:
+      app: user-service
+  strategy:
+    type: RollingUpdate                # Zero-downtime deployments
+    rollingUpdate:
+      maxUnavailable: 1
+      maxSurge: 1
+  template:
+    metadata:
+      labels:
+        app: user-service
+    spec:
+      containers:
+        - name: user-service
+          image: yourdockerhubuser/user-service:latest   # Replace with your image
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 3001
+
+          # Load config from ConfigMap
+          envFrom:
+            - configMapRef:
+                name: app-config
+
+          # Load secrets from Secret
+          env:
+            - name: JWT_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: app-secrets
+                  key: JWT_SECRET
+            - name: POSTGRES_USER
+              valueFrom:
+                secretKeyRef:
+                  name: app-secrets
+                  key: POSTGRES_USER
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: app-secrets
+                  key: POSTGRES_PASSWORD
+            - name: PORT
+              value: "3001"
+
+          # Liveness probe — K8s restarts pod if this fails
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: 3001
+            initialDelaySeconds: 15
+            periodSeconds: 10
+            failureThreshold: 3
+
+          # Readiness probe — K8s only sends traffic when this passes
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: 3001
+            initialDelaySeconds: 5
+            periodSeconds: 5
+
+          # Resource limits — prevents one pod from starving others
+          resources:
+            requests:
+              memory: "128Mi"
+              cpu: "100m"
+            limits:
+              memory: "256Mi"
+              cpu: "300m"
